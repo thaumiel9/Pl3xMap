@@ -1,3 +1,7 @@
+Original Pl3xMap plugin has been discotinued, this fork will keep the plugin alive. 
+
+Get support at G.E.A.R.S https://discord.gg/syhJgJBE4e
+
 <div align="center">
 <img src="https://raw.githubusercontent.com/pl3xgaming/Pl3xMap/master/plugin/src/main/resources/web/images/og.png" alt="Pl3xMap">
 
@@ -5,7 +9,6 @@
 
 [![MIT License](https://img.shields.io/github/license/pl3xgaming/Pl3xMap?&logo=github)](License)
 [![CodeFactor](https://www.codefactor.io/repository/github/pl3xgaming/pl3xmap/badge)](https://www.codefactor.io/repository/github/pl3xgaming/pl3xmap)
-[![Join us on Discord](https://img.shields.io/discord/838127837667131433.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/B8WpDPXeBh)
 
 [![Pl3xMap's Stargazers](https://img.shields.io/github/stars/pl3xgaming/Pl3xMap?label=stars&logo=github)](https://github.com/pl3xgaming/Pl3xMap/stargazers)
 [![BillyGalbreath's Followers](https://img.shields.io/github/followers/BillyGalbreath?label=followers&logo=github)](https://github.com/BillyGalbreath?tab=followers)
@@ -86,16 +89,6 @@ dependencies {
 ```
 
 ## Building from source
-
-To compile Pl3xMap, you need to have the Paper server implementation installed to your local maven repository.
-
-Download Paper from [papermc.io/downloads](https://papermc.io/downloads) then run this Java command (using the JAR you downloaded)
-
-```
-java -jar -Dpaperclip.install=true paper-1.17-75.jar
-```
-
-Once that is complete you can compile Pl3xMap with this command
 
 ```
 ./gradlew build
