@@ -62,29 +62,34 @@ Leaflet (the web ui frontend) is licensed under [2-clause BSD License](https://g
 ### Dependency Information
 Maven
 ```xml
-<repository>
-    <id>pl3x-repo</id>
-    <url>https://repo.pl3x.net/</url>
-</repository>
+<repositories>
+    <repository>
+        <id>jitpack.io</id>
+        <url>https://jitpack.io</url>
+    </repository>
+</repositories>
 ```
 ```xml
 <dependency>
-    <groupId>net.pl3x.map</groupId>
-    <artifactId>pl3xmap-api</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
-    <scope>provided</scope>
+	<dependency>
+    <groupId>com.github.NeumimTo</groupId>
+    <artifactId>Pl3xMap</artifactId>
+    <version>master-SNAPSHOT</version>
 </dependency>
 ```
 
 Gradle
 ```kotlin
-repositories {
-    maven("https://repo.pl3x.net/")
+allprojects {
+    repositories {
+        ...
+        maven("https://jitpack.io")
+    }
 }
 ```
 ```kotlin
 dependencies {
-    compileOnly("net.pl3x.map", "pl3xmap-api", "1.0.0-SNAPSHOT")
+    compileOnly("com.github.NeumimTo:Pl3xMap:master-SNAPSHOT")
 }
 ```
 
