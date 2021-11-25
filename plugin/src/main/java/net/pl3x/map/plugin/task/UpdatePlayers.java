@@ -2,6 +2,7 @@ package net.pl3x.map.plugin.task;
 
 import com.google.gson.Gson;
 import net.pl3x.map.plugin.Pl3xMapPlugin;
+import net.pl3x.map.plugin.api.PlayerManager;
 import net.pl3x.map.plugin.configuration.WorldConfig;
 import net.pl3x.map.plugin.util.FileUtil;
 import org.bukkit.Bukkit;
@@ -47,7 +48,8 @@ public class UpdatePlayers extends BukkitRunnable {
                 }
                 Map<String, Object> playerEntry = new HashMap<>();
                 Location playerLoc = player.getLocation();
-                playerEntry.put("name", player.getName());
+
+                playerEntry.put("name", this.plugin.playerManager().decorateName(player, player.getName()));
                 playerEntry.put("uuid", player.getUniqueId().toString().replace("-", ""));
                 playerEntry.put("world", playerLoc.getWorld().getName());
                 if (worldConfig.PLAYER_TRACKER_ENABLED) {

@@ -8,14 +8,16 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
+import java.util.function.BiFunction;
+import java.util.stream.Collectors;
 
 public class PlayerManager implements net.pl3x.map.api.PlayerManager {
     public static final NamespacedKey key = new NamespacedKey(Pl3xMapPlugin.getInstance(), "hidden");
 
     private final Set<UUID> tempHidden = new HashSet<>();
+
+    private Map<BiFunction<Player, String, String>, Integer> playerNameDecorators = new LinkedHashMap<>();
 
     @Override
     public void hide(final @NonNull UUID uuid, boolean persistent) {
@@ -74,5 +76,23 @@ public class PlayerManager implements net.pl3x.map.api.PlayerManager {
 
     private static PersistentDataContainer pdc(Player player) {
         return player.getPersistentDataContainer();
+    }
+
+    @Override
+    public void registerPlayerNameDecorator(int priority, BiFunction<Player, String, String> decorator) {
+        playerNameDecorators.put(decorator, priority);
+
+        playerNameDecorators = playerNameDecorators.entrySet().stream()
+                .sorted((k1, k2) -> -k1.getValue().compareTo(k2.getValue()))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
+                        (e1, e2) -> e1, LinkedHashMap::new));
+    }
+
+    public String decorateName(Player player, String name) {
+        String previous = name;
+        for (BiFunction<Player, String, String> fn : playerNameDecorators.keySet()) {
+            previous = fn.apply(player, name);
+        }
+        return previous;
     }
 }

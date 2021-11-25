@@ -1,8 +1,11 @@
 package net.pl3x.map.api;
 
+import org.bukkit.entity.Player;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.UUID;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 /**
  * Interface for interacting with players on the map
@@ -76,4 +79,16 @@ public interface PlayerManager {
      */
     boolean hidden(@NonNull UUID uuid);
 
+
+    /**
+     * Function that is used to change player name in a player list
+     *
+     * Multiple decorators can be registered at the same time, in that case the one with Integer.MAX_VALUE will be run as first
+     * These two values should be used only in addons that you do not plan to release for public use.
+     *
+     * The function takes two arguments - the player and the output of previous decorator
+     *
+     * @param decorator
+     */
+    void registerPlayerNameDecorator(int priority, BiFunction<Player, String, String> decorator);
 }
