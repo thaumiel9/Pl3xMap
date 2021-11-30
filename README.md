@@ -1,8 +1,8 @@
-Original Pl3xMap plugin has been discotinued, this fork will keep the plugin alive. 
-
-Get support at G.E.A.R.S https://discord.gg/syhJgJBE4e
-
 <div align="center">
+Original Pl3xMap plugin has been discotinued, this fork will keep the plugin alive. 
+	
+Get support at G.E.A.R.S https://discord.gg/syhJgJBE4e
+	
 <img src="https://raw.githubusercontent.com/NeumimTo/Pl3xMap/master/plugin/src/main/resources/web/images/og.png" alt="Pl3xMap">
 
 # Pl3xMap
@@ -11,7 +11,6 @@ Get support at G.E.A.R.S https://discord.gg/syhJgJBE4e
 [![CodeFactor](https://www.codefactor.io/repository/github/NeumimTo/pl3xmap/badge)](https://www.codefactor.io/repository/github/NeumimTo/pl3xmap)
 
 [![Pl3xMap's Stargazers](https://img.shields.io/github/stars/NeumimTo/Pl3xMap?label=stars&logo=github)](https://github.com/NeumimTo/Pl3xMap/stargazers)
-[![BillyGalbreath's Followers](https://img.shields.io/github/followers/BillyGalbreath?label=followers&logo=github)](https://github.com/BillyGalbreath?tab=followers)
 [![Pl3xMap Forks](https://img.shields.io/github/forks/NeumimTo/Pl3xMap?label=forks&logo=github)](https://github.com/NeumimTo/Pl3xMap/network/members)
 [![Pl3xMap Watchers](https://img.shields.io/github/watchers/NeumimTo/Pl3xMap?label=watchers&logo=github)](https://github.com/NeumimTo/Pl3xMap/watchers)
 
@@ -35,10 +34,12 @@ If, like me, you have no real need for 3D views, the novelty of Dynmap and Bluem
 ## Contact
 [![Join us on Discord](https://img.shields.io/discord/576104470249865247.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/syhJgJBE4e)
 
-Join us on [Discord](https://discord.gg/syhJgJBE4e) in the PL3XMAP category on G.E.A.R.S!
+Join us on [Discord](https://discord.gg/syhJgJBE4e) in the Pl3xmap category on G.E.A.R.S.
 
 ## Downloads
-Downloads can be obtained from the [releases](https://github.com/pl3xgaming/Pl3xMap/releases) section.
+New downloads can be obtained from [NeumimTo releases](https://github.com/NeumimTo/Pl3xMap/releases) section.
+
+Previous downloads can be obtained from the [pl3xgaming releases](https://github.com/pl3xgaming/Pl3xMap/releases) section.
 
 ## Servers Using Pl3xMap
 
