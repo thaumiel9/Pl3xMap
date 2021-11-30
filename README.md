@@ -35,7 +35,7 @@ If, like me, you have no real need for 3D views, the novelty of Dynmap and Bluem
 ## Contact
 [![Join us on Discord](https://img.shields.io/discord/576104470249865247.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/syhJgJBE4e)
 
-Join us on [Discord](https://discord.gg/syhJgJBE4e) in the #「pl3x」support channel in G.E.A.R.S
+Join us on [Discord](https://discord.gg/syhJgJBE4e) in the PL3XMAP category on G.E.A.R.S!
 
 ## Downloads
 Downloads can be obtained from the [releases](https://github.com/pl3xgaming/Pl3xMap/releases) section.
