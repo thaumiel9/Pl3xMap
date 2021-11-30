@@ -1,6 +1,6 @@
 plugins {
     id("com.github.johnrengelman.shadow") version "7.0.0"
-    id("io.papermc.paperweight.userdev") version "1.1.14"
+    id("io.papermc.paperweight.userdev") version "1.3.0-SNAPSHOT"
     id("net.minecrell.plugin-yml.bukkit") version "0.4.0"
     id("xyz.jpenilla.run-paper") version "1.0.4"
 }
@@ -13,7 +13,10 @@ dependencies {
     implementation("net.kyori", "adventure-text-minimessage", "4.1.0-SNAPSHOT")
     implementation("io.undertow", "undertow-core", "2.2.3.Final")
     implementation("org.bstats", "bstats-bukkit", "2.2.1")
-    paperDevBundle("1.17.1-R0.1-SNAPSHOT")
+    implementation("io.papermc.paperweight:userdev:1.3.0-SNAPSHOT")
+  //  paperDevBundle("1.18-R0.1-SNAPSHOT")
+    paperDevBundle("1.18-rc3-R0.1-SNAPSHOT")
+
 }
 
 tasks {
@@ -36,7 +39,7 @@ tasks {
         dependsOn(reobfJar)
     }
     runServer {
-        minecraftVersion("1.17.1")
+        minecraftVersion("1.18")
     }
 }
 
@@ -47,7 +50,7 @@ runPaper {
 bukkit {
     main = "net.pl3x.map.plugin.Pl3xMapPlugin"
     name = rootProject.name
-    apiVersion = "1.17"
+    apiVersion = "1.18"
     website = project.property("githubUrl") as String
-    authors = listOf("BillyGalbreath", "jmp")
+    authors = listOf("BillyGalbreath", "jmp", "NeumimTo")
 }
