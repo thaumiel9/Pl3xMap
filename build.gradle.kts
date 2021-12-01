@@ -13,8 +13,8 @@ subprojects {
     apply<JavaLibraryPlugin>()
 
     java {
-        targetCompatibility = JavaVersion.toVersion(16)
-        sourceCompatibility = JavaVersion.toVersion(16)
+        targetCompatibility = JavaVersion.toVersion(17)
+        sourceCompatibility = JavaVersion.toVersion(17)
     }
 
     tasks {

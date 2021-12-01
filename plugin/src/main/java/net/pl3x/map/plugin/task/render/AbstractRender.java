@@ -254,7 +254,7 @@ public abstract class AbstractRender implements Runnable {
         for (int x = 0; x < 16; x++) {
             if (cancelled) return lastY;
             final int yDiff = chunk.getHeight(Heightmap.Types.WORLD_SURFACE, x, 15) + 1;
-            int height = mapWorld.config().MAP_MAX_HEIGHT == -1 ? chunk.getLevel().getLogicalHeight() : mapWorld.config().MAP_MAX_HEIGHT;
+            int height = mapWorld.config().MAP_MAX_HEIGHT == -1 ? chunk.getLevel().getHeight() : mapWorld.config().MAP_MAX_HEIGHT;
             mutablePos.set(
                     chunk.getPos().getMinBlockX() + x,
                     Math.min(yDiff, height),
@@ -277,7 +277,7 @@ public abstract class AbstractRender implements Runnable {
         final BlockPos.MutableBlockPos mutablePos = new BlockPos.MutableBlockPos();
 
         final int yDiff = chunk.getHeight(Heightmap.Types.WORLD_SURFACE, imgX, imgZ) + 1;
-        int height = mapWorld.config().MAP_MAX_HEIGHT == -1 ? chunk.getLevel().getLogicalHeight() : mapWorld.config().MAP_MAX_HEIGHT;
+        int height = mapWorld.config().MAP_MAX_HEIGHT == -1 ? chunk.getLevel().getHeight() : mapWorld.config().MAP_MAX_HEIGHT;
         mutablePos.set(blockX, Math.min(yDiff, height), blockZ);
 
         if (yDiff > 1) {
