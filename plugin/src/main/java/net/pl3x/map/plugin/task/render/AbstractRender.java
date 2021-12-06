@@ -429,7 +429,11 @@ public abstract class AbstractRender implements Runnable {
         while (!future.isDone()) {
             if (cancelled) return null;
         }
-        return (LevelChunk) future.join().left().orElse(null);
+        LevelChunk levelChunk = (LevelChunk) future.join().left().orElse(null);
+        if (levelChunk != null) {
+            levelChunk.mustNotSave = true;
+        }
+        return levelChunk;
     }
 
     void sleep(int ms) {
