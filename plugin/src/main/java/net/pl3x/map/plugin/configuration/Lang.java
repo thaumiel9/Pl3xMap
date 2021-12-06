@@ -152,7 +152,7 @@ public final class Lang {
     public static String LOG_COULD_NOT_SAVE_REGION = "Could not save map for region {x},{z}";
     @LangKey("log.internal-web-not-running")
     public static String LOG_INTERNAL_WEB_STOP_ERROR = "An error occurred with the internal webserver";
-    @LangKey("log.internal-web-not-running")
+    @LangKey("log.corrupted-tile")
     public static String LOG_CORRUPTED_PNG = "Corrupted PNG {png} metadata found, file will be regenerated";
 
     private static void init() {
