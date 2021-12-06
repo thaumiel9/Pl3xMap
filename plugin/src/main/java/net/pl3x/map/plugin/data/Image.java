@@ -57,7 +57,7 @@ public class Image {
                     try {
                         image = ImageIO.read(file);
                     } catch (IIOException e) {
-                        Logger.warn(Lang.LOG_CORRUPTED_PNG.replace("{png}", fileName));
+                        Logger.warn(Lang.LOG_CORRUPTED_PNG.replace("{png}", fileName), e);
                         file.delete();
                         image = new BufferedImage(SIZE, SIZE, BufferedImage.TYPE_INT_ARGB);
                     }
