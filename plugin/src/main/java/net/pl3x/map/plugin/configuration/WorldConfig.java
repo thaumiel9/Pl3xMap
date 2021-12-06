@@ -48,6 +48,7 @@ public class WorldConfig extends AbstractWorldConfig {
     public boolean MAP_ITERATE_UP = false;
     public int MAP_MAX_HEIGHT = -1;
     public int MAP_RENDER_PROGRESS_INTERVAL = 1;
+    public int MAP_MIN_HEIGHT = -64;
 
     private void worldSettings() {
         MAP_ENABLED = getBoolean("map.enabled", MAP_ENABLED);
@@ -57,6 +58,7 @@ public class WorldConfig extends AbstractWorldConfig {
         MAX_RENDER_THREADS = getInt("map.max-render-threads", MAX_RENDER_THREADS);
         MAP_ITERATE_UP = getBoolean("map.iterate-up", MAP_ITERATE_UP);
         MAP_MAX_HEIGHT = getInt("map.max-height", MAP_MAX_HEIGHT);
+        MAP_MIN_HEIGHT = getInt("map.min-height", MAP_MIN_HEIGHT);
         MAP_RENDER_PROGRESS_INTERVAL = getInt("map.render-progress-interval", MAP_RENDER_PROGRESS_INTERVAL);
     }
 

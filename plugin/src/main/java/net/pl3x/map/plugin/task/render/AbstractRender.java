@@ -5,11 +5,10 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.FutureTask;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
+
 import net.kyori.adventure.text.minimessage.Template;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -27,6 +26,8 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.pl3x.map.api.Pair;
 import net.pl3x.map.plugin.Logger;
+import net.pl3x.map.plugin.Pl3xMapPlugin;
+import net.pl3x.map.plugin.configuration.Config;
 import net.pl3x.map.plugin.configuration.Lang;
 import net.pl3x.map.plugin.data.BiomeColors;
 import net.pl3x.map.plugin.data.ChunkCoordinate;
@@ -45,7 +46,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 public abstract class AbstractRender implements Runnable {
     private static final org.apache.logging.log4j.Logger LOGGER = LogManager.getLogger();
 
-    private final ExecutorService executor;
+    private final ThreadPoolExecutor executor;
     private final FutureTask<Void> futureTask;
     protected volatile boolean cancelled = false;
 
@@ -55,9 +56,10 @@ public abstract class AbstractRender implements Runnable {
     protected final Path worldTilesDir;
 
     private final ThreadLocal<BiomeColors> biomeColors;
-
     protected final AtomicInteger curChunks = new AtomicInteger(0);
     protected final AtomicInteger curRegions = new AtomicInteger(0);
+
+    private final AtomicLong lastLog = new AtomicLong(0);
 
     protected Timer timer = null;
 
@@ -68,7 +70,7 @@ public abstract class AbstractRender implements Runnable {
     public AbstractRender(final @NonNull MapWorld mapWorld, final @NonNull ExecutorService executor) {
         this.futureTask = new FutureTask<>(this, null);
         this.mapWorld = mapWorld;
-        this.executor = executor;
+        this.executor = (ThreadPoolExecutor) executor; // we can assume its tpe
         this.world = mapWorld.bukkit();
         this.nmsWorld = ReflectionUtil.CraftBukkit.serverLevel(this.world);
         this.worldTilesDir = FileUtil.getWorldFolder(world);
@@ -177,10 +179,23 @@ public abstract class AbstractRender implements Runnable {
                 }
                 curChunks.incrementAndGet();
             }
+            if (Config.DEBUG_MODE) {
+                logStatistics();
+            }
         }, this.executor).exceptionally(thr -> {
             LOGGER.warn("mapChunkColumn failed!", thr);
             return null;
         });
+    }
+
+    private void logStatistics() {
+        if (lastLog.get() < System.currentTimeMillis()) {
+            lastLog.set(System.currentTimeMillis() + 1000L);
+            Logger.info("Executor Active Count: " + executor.getActiveCount() +
+                    " Queue:" + executor.getQueue().size() +
+                    " MaxPoolSize: " + executor.getMaximumPoolSize());
+
+        }
     }
 
     protected final @NonNull CompletableFuture<Void> mapSingleChunk(final @NonNull Image image, final int chunkX, final int chunkZ) {
@@ -215,6 +230,9 @@ public abstract class AbstractRender implements Runnable {
             }
 
             curChunks.incrementAndGet();
+            if (Config.DEBUG_MODE) {
+                logStatistics();
+            }
         }, this.executor).exceptionally(thr -> {
             LOGGER.warn("mapSingleChunk failed!", thr);
             return null;
@@ -280,7 +298,7 @@ public abstract class AbstractRender implements Runnable {
         int height = mapWorld.config().MAP_MAX_HEIGHT == -1 ? chunk.getLevel().getHeight() : mapWorld.config().MAP_MAX_HEIGHT;
         mutablePos.set(blockX, Math.min(yDiff, height), blockZ);
 
-        if (yDiff > 1) {
+        if (yDiff > mapWorld.config().MAP_MIN_HEIGHT) {
             state = mapWorld.config().MAP_ITERATE_UP ? iterateUp(chunk, mutablePos) : iterateDown(chunk, mutablePos);
         } else {
             // no blocks found, show invisible/air
@@ -327,12 +345,12 @@ public abstract class AbstractRender implements Runnable {
             do {
                 mutablePos.move(Direction.DOWN);
                 state = chunk.getBlockState(mutablePos);
-            } while (!state.isAir() && mutablePos.getY() > 0);
+            } while (!state.isAir() && mutablePos.getY() > mapWorld.config().MAP_MIN_HEIGHT);
         }
         do {
             mutablePos.move(Direction.DOWN);
             state = chunk.getBlockState(mutablePos);
-        } while ((mapWorld.getMapColor(state) == Colors.clearMapColor() || mapWorld.advanced().invisibleBlocks.contains(state.getBlock())) && mutablePos.getY() > 0);
+        } while ((mapWorld.getMapColor(state) == Colors.clearMapColor() || mapWorld.advanced().invisibleBlocks.contains(state.getBlock())) && mutablePos.getY() > mapWorld.config().MAP_MIN_HEIGHT);
         return state;
     }
 
@@ -429,7 +447,11 @@ public abstract class AbstractRender implements Runnable {
         while (!future.isDone()) {
             if (cancelled) return null;
         }
-        return (LevelChunk) future.join().left().orElse(null);
+        LevelChunk levelChunk = (LevelChunk) future.join().left().orElse(null);
+        if (levelChunk != null) {
+            //levelChunk.mustNotSave = true;
+        }
+        return levelChunk;
     }
 
     void sleep(int ms) {

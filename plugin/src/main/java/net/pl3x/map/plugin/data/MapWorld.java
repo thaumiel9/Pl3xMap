@@ -16,12 +16,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
+
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.state.BlockState;
 import net.pl3x.map.api.LayerProvider;
@@ -276,9 +272,17 @@ public final class MapWorld implements net.pl3x.map.api.MapWorld {
         if (this.backgroundRendering()) {
             this.stopBackgroundRender();
         }
-        executor.shutdown();
-        imageIOexecutor.shutdown();
+        terminate(executor);
+        terminate(imageIOexecutor);
         this.serializeDirtyChunks();
+    }
+
+    private void terminate(ExecutorService executor) {
+        try {
+            executor.awaitTermination(1, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public void saveImage(final @NonNull Image image) {

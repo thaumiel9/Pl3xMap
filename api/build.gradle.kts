@@ -18,9 +18,4 @@ publishing {
             from(components["java"])
         }
     }
-
-    repositories.maven {
-        url = uri("https://repo.pl3x.net/snapshots")
-        credentials(PasswordCredentials::class)
-    }
 }

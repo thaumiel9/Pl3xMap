@@ -4,12 +4,12 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import javax.imageio.IIOImage;
-import javax.imageio.ImageIO;
-import javax.imageio.ImageWriteParam;
-import javax.imageio.ImageWriter;
+import javax.imageio.*;
+import javax.imageio.stream.ImageOutputStream;
+
 import net.minecraft.util.Mth;
 import net.pl3x.map.plugin.Logger;
 import net.pl3x.map.plugin.configuration.Config;
@@ -54,7 +54,13 @@ public class Image {
             try {
                 BufferedImage image;
                 if (file.exists()) {
-                    image = ImageIO.read(file);
+                    try {
+                        image = ImageIO.read(file);
+                    } catch (IIOException e) {
+                        Logger.warn(Lang.LOG_CORRUPTED_PNG.replace("{png}", fileName), e);
+                        file.delete();
+                        image = new BufferedImage(SIZE, SIZE, BufferedImage.TYPE_INT_ARGB);
+                    }
                 } else {
                     image = new BufferedImage(SIZE, SIZE, BufferedImage.TYPE_INT_ARGB);
                 }
@@ -72,16 +78,18 @@ public class Image {
 
                 if (Config.COMPRESS_IMAGES) {
                     ImageWriter writer = ImageIO.getImageWritersByFormatName("png").next();
-                    writer.setOutput(ImageIO.createImageOutputStream(new FileOutputStream(file)));
-                    ImageWriteParam param = writer.getDefaultWriteParam();
-                    if (param.canWriteCompressed()) {
-                        param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
-                        if (param.getCompressionType() == null) {
-                            param.setCompressionType(param.getCompressionTypes()[0]);
+                    try (ImageOutputStream outputStream = ImageIO.createImageOutputStream(new FileOutputStream(file))) {
+                        writer.setOutput(outputStream);
+                        ImageWriteParam param = writer.getDefaultWriteParam();
+                        if (param.canWriteCompressed()) {
+                            param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+                            if (param.getCompressionType() == null) {
+                                param.setCompressionType(param.getCompressionTypes()[0]);
+                            }
+                            param.setCompressionQuality(Config.COMPRESSION_RATIO);
                         }
-                        param.setCompressionQuality(Config.COMPRESSION_RATIO);
+                        writer.write(null, new IIOImage(image, null, null), param);
                     }
-                    writer.write(null, new IIOImage(image, null, null), param);
                 } else {
                     ImageIO.write(image, "png", file);
                 }
