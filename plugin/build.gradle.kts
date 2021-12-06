@@ -1,7 +1,7 @@
 plugins {
     id("com.github.johnrengelman.shadow") version "7.1.0"
     id("io.papermc.paperweight.userdev") version "1.3.0-SNAPSHOT"
-    id("net.minecrell.plugin-yml.bukkit") version "0.4.0"
+    id("net.minecrell.plugin-yml.bukkit") version "0.5.1"
     id("xyz.jpenilla.run-paper") version "1.0.4"
 }
 
@@ -48,6 +48,6 @@ bukkit {
     main = "net.pl3x.map.plugin.Pl3xMapPlugin"
     name = rootProject.name
     apiVersion = "1.18"
-    website = project.property("githubUrl") as String
+    website = "https://github.com/NeumimTo/Pl3xMap"
     authors = listOf("BillyGalbreath", "jmp", "NeumimTo")
 }

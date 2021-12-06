@@ -280,7 +280,7 @@ public abstract class AbstractRender implements Runnable {
         int height = mapWorld.config().MAP_MAX_HEIGHT == -1 ? chunk.getLevel().getHeight() : mapWorld.config().MAP_MAX_HEIGHT;
         mutablePos.set(blockX, Math.min(yDiff, height), blockZ);
 
-        if (yDiff > 1) {
+        if (yDiff > mapWorld.config().MAP_MIN_HEIGHT) {
             state = mapWorld.config().MAP_ITERATE_UP ? iterateUp(chunk, mutablePos) : iterateDown(chunk, mutablePos);
         } else {
             // no blocks found, show invisible/air
@@ -327,12 +327,12 @@ public abstract class AbstractRender implements Runnable {
             do {
                 mutablePos.move(Direction.DOWN);
                 state = chunk.getBlockState(mutablePos);
-            } while (!state.isAir() && mutablePos.getY() > 0);
+            } while (!state.isAir() && mutablePos.getY() > mapWorld.config().MAP_MIN_HEIGHT);
         }
         do {
             mutablePos.move(Direction.DOWN);
             state = chunk.getBlockState(mutablePos);
-        } while ((mapWorld.getMapColor(state) == Colors.clearMapColor() || mapWorld.advanced().invisibleBlocks.contains(state.getBlock())) && mutablePos.getY() > 0);
+        } while ((mapWorld.getMapColor(state) == Colors.clearMapColor() || mapWorld.advanced().invisibleBlocks.contains(state.getBlock())) && mutablePos.getY() > mapWorld.config().MAP_MIN_HEIGHT);
         return state;
     }
 
@@ -431,7 +431,7 @@ public abstract class AbstractRender implements Runnable {
         }
         LevelChunk levelChunk = (LevelChunk) future.join().left().orElse(null);
         if (levelChunk != null) {
-            levelChunk.mustNotSave = true;
+            //levelChunk.mustNotSave = true;
         }
         return levelChunk;
     }
