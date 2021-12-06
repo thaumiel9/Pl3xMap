@@ -7,10 +7,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import javax.imageio.IIOImage;
-import javax.imageio.ImageIO;
-import javax.imageio.ImageWriteParam;
-import javax.imageio.ImageWriter;
+import javax.imageio.*;
 import javax.imageio.stream.ImageOutputStream;
 
 import net.minecraft.util.Mth;
@@ -57,7 +54,13 @@ public class Image {
             try {
                 BufferedImage image;
                 if (file.exists()) {
-                    image = ImageIO.read(file);
+                    try {
+                        image = ImageIO.read(file);
+                    } catch (IIOException e) {
+                        Logger.warn(Lang.LOG_CORRUPTED_PNG.replace("{png}", fileName));
+                        file.delete();
+                        image = new BufferedImage(SIZE, SIZE, BufferedImage.TYPE_INT_ARGB);
+                    }
                 } else {
                     image = new BufferedImage(SIZE, SIZE, BufferedImage.TYPE_INT_ARGB);
                 }
