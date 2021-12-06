@@ -5,11 +5,10 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.FutureTask;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
+
 import net.kyori.adventure.text.minimessage.Template;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -27,6 +26,8 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.pl3x.map.api.Pair;
 import net.pl3x.map.plugin.Logger;
+import net.pl3x.map.plugin.Pl3xMapPlugin;
+import net.pl3x.map.plugin.configuration.Config;
 import net.pl3x.map.plugin.configuration.Lang;
 import net.pl3x.map.plugin.data.BiomeColors;
 import net.pl3x.map.plugin.data.ChunkCoordinate;
@@ -45,7 +46,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 public abstract class AbstractRender implements Runnable {
     private static final org.apache.logging.log4j.Logger LOGGER = LogManager.getLogger();
 
-    private final ExecutorService executor;
+    private final ThreadPoolExecutor executor;
     private final FutureTask<Void> futureTask;
     protected volatile boolean cancelled = false;
 
@@ -55,9 +56,10 @@ public abstract class AbstractRender implements Runnable {
     protected final Path worldTilesDir;
 
     private final ThreadLocal<BiomeColors> biomeColors;
-
     protected final AtomicInteger curChunks = new AtomicInteger(0);
     protected final AtomicInteger curRegions = new AtomicInteger(0);
+
+    private final AtomicLong lastLog = new AtomicLong(0);
 
     protected Timer timer = null;
 
@@ -68,7 +70,7 @@ public abstract class AbstractRender implements Runnable {
     public AbstractRender(final @NonNull MapWorld mapWorld, final @NonNull ExecutorService executor) {
         this.futureTask = new FutureTask<>(this, null);
         this.mapWorld = mapWorld;
-        this.executor = executor;
+        this.executor = (ThreadPoolExecutor) executor; // we can assume its tpe
         this.world = mapWorld.bukkit();
         this.nmsWorld = ReflectionUtil.CraftBukkit.serverLevel(this.world);
         this.worldTilesDir = FileUtil.getWorldFolder(world);
@@ -177,10 +179,23 @@ public abstract class AbstractRender implements Runnable {
                 }
                 curChunks.incrementAndGet();
             }
+            if (Config.DEBUG_MODE) {
+                logStatistics();
+            }
         }, this.executor).exceptionally(thr -> {
             LOGGER.warn("mapChunkColumn failed!", thr);
             return null;
         });
+    }
+
+    private void logStatistics() {
+        if (lastLog.get() < System.currentTimeMillis()) {
+            lastLog.set(System.currentTimeMillis() + 1000L);
+            Logger.info("Executor Active Count: " + executor.getActiveCount() +
+                    " Queue:" + executor.getQueue().size() +
+                    " MaxPoolSize: " + executor.getMaximumPoolSize());
+
+        }
     }
 
     protected final @NonNull CompletableFuture<Void> mapSingleChunk(final @NonNull Image image, final int chunkX, final int chunkZ) {
@@ -215,6 +230,9 @@ public abstract class AbstractRender implements Runnable {
             }
 
             curChunks.incrementAndGet();
+            if (Config.DEBUG_MODE) {
+                logStatistics();
+            }
         }, this.executor).exceptionally(thr -> {
             LOGGER.warn("mapSingleChunk failed!", thr);
             return null;
