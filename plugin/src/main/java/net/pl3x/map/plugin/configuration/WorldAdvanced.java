@@ -11,11 +11,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @SuppressWarnings("unused")
 public class WorldAdvanced extends AbstractWorldConfig {
@@ -44,7 +40,7 @@ public class WorldAdvanced extends AbstractWorldConfig {
         this.config.readConfig(WorldAdvanced.class, this);
     }
 
-    public final List<Block> invisibleBlocks = new ArrayList<>();
+    public final Set<Block> invisibleBlocks = new HashSet<>();
 
     private void invisibleBlocks() {
         invisibleBlocks.clear();
@@ -56,7 +52,7 @@ public class WorldAdvanced extends AbstractWorldConfig {
         )).forEach(block -> invisibleBlocks.add(Registry.BLOCK.get(new ResourceLocation(block.toString()))));
     }
 
-    public final List<Block> iterateUpBaseBlocks = new ArrayList<>();
+    public final Set<Block> iterateUpBaseBlocks = new HashSet<>();
 
     private void iterateUpBaseBlocks() {
         iterateUpBaseBlocks.clear();
